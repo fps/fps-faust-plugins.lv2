@@ -3,13 +3,13 @@ import("stdfaust.lib");
 process =
     _
   <:
-      stage(1, 500, 800, 1200, 40, -20)
-    , stage(2, 1000, 2000, 4000, 20, -10)
+      stage(1, 500, 800, 1200, 800, 40, -20)
+    , stage(2, 1000, 2000, 4000, 2000, 20, -10)
   :>
     _
   with
   {
-    stage(n, pre_hp_cutoff, pre_lp_cutoff, post_lp_cutoff, pre_gain, post_gain) =
+    stage(n, pre_hp_cutoff, pre_lp_cutoff, post_lp_cutoff, post_hp_cutoff, pre_gain, post_gain) =
         _
       <:
         (
@@ -17,7 +17,7 @@ process =
           :
             gain_stage(n, pre_gain)
           :
-            post_filter(n, post_lp_cutoff, post_gain)
+            post_filter(n, post_lp_cutoff, post_hp_cutoff, post_gain)
         )
         , _ - pre_filter(n, pre_hp_cutoff, pre_lp_cutoff)
       :>
@@ -25,7 +25,7 @@ process =
             _
           *
             (
-              hslider("[%n][09] Stage %n -  Gain", -3, -32, 32, 0.01)
+              hslider("[%n][11] Stage %n -  Gain", -3, -32, 32, 0.01)
               : ba.db2linear
             )
         )
@@ -58,15 +58,21 @@ process =
         aa.tanh1
       ;
 
-    post_filter(n, lp_cutoff, gain) =
+    post_filter(n, lp_cutoff, hp_cutoff, gain) =
+        fi.svf.hp
+        (
+          hslider("[%n][06] Stage %n - Post - High - Cutoff", hp_cutoff, 1, 5000, 0.01),
+          hslider("[%n][07] Stage %n - Post - High - Q", 0.7071, 0.1, 5, 0.01)
+        )
+      :
         fi.svf.lp
         (
-          hslider("[%n][06] Stage %n - Post - Low - Cutoff", lp_cutoff, 1, 5000, 0.01),
-          hslider("[%n][07] Stage %n - Post - Low - Q", 0.7071, 0.1, 5, 0.01)
+          hslider("[%n][08] Stage %n - Post - Low - Cutoff", lp_cutoff, 1, 5000, 0.01),
+          hslider("[%n][09] Stage %n - Post - Low - Q", 0.7071, 0.1, 5, 0.01)
         )
       *
         (
-          hslider("[%n][08] Stage %n - Post - Gain", gain, -32, 64, 0.01)
+          hslider("[%n][10] Stage %n - Post - Gain", gain, -32, 64, 0.01)
           : ba.db2linear
         )
       ;
