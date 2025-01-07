@@ -1,4 +1,5 @@
-PREFIX ?= /usr/local
+PREFIX ?= usr/local
+DESTDIR ?= /
 
 dsp_files = $(wildcard *.dsp)
 targets = $(dsp_files:%.dsp=%.lv2)
@@ -9,5 +10,5 @@ all: $(targets)
 	faust2lv2 $<
 
 install:
-	install -d ${PREFIX}/lib/lv2
-	cp -r *.lv2 ${PREFIX}/lib/lv2
+	install -d $(DESTDIR)${PREFIX}/lib/lv2
+	cp -r *.lv2 $(DESTDIR)${PREFIX}/lib/lv2
