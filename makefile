@@ -7,8 +7,7 @@ targets = $(dsp_files:%.dsp=%.lv2)
 all: $(targets)
 
 %.lv2: %.dsp
-	faust2lv2 -nomidicc $<
-	# faust2lv2 -nomidicc -uri-prefix="https://dfdx.eu/lv2/fps-faust-plugins.lv2" $<
+	faust2lv2 -nomidicc -uri-prefix "https://dfdx.eu/lv2/fps-faust-plugins.lv2" $<
 
 install:
 	install -d $(DESTDIR)/${PREFIX}/lib/lv2
