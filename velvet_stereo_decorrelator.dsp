@@ -11,7 +11,8 @@ process =
         (_ * off_amount), 
         (_ * off_amount)
     )
-    :> (_,_)
+    :> 
+    (_,_)
 with {
     on_amount = hslider("Amount", 1, 0, 1, 0.001);
     off_amount = (1 - on_amount);
